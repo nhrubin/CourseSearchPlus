@@ -1,5 +1,5 @@
 from lxml import html
-import requests
+import urllib2
 import string
 import re
 
@@ -8,20 +8,30 @@ def getCourseDescription(deptNum, courseNum):
     # (Example: deptNum = 15, courseNum = 251)
     reqUrl = 'http://coursecatalog.web.cmu.edu/ribbit/index.cgi?page=getcourse.rjs&code=' + str(deptNum) + '-' + str(courseNum);
 
-    page = requests.get(reqUrl);
-    return page.text;
+    page = urllib2.urlopen(reqUrl);
+    if page.getcode() != 200:
+      return ""
+    return page.read();
     
 def getCoursePrereqs(deptNum, courseNum):
     description = getCourseDescription(deptNum, courseNum)
-    start = string.find(description, "Prerequisites: ") + len("Prerequisites: ")
+    if not description:
+      return ""
+
+    start = string.find(description, "Prerequisites: ")
     if start == -1:
-        start = string.find(description, "Prerequisite: ") + len("Prerequisite: ")
+        start = string.find(description, "Prerequisite: ")
         if start == -1:
-            return -1
+            return "None"
+        else:
+          start += len("Prerequisite: ")
+    else:
+      start += len("Prerequisites: ")
+
     prereqs = description[start:]
     end = string.find(prereqs, "<br />")
     if end == -1:
-        raise InputError
+        return "None"
     if prereqs[end-1] == ".":
         end -= 1
     prereqs = prereqs[:end]
@@ -46,6 +56,9 @@ def reqClean(prereqs):
         return prereqs
     
 def parsePrereqs(prereqs):
+    if not prereqs or prereqs == "None":
+      return prereqs
+
     cn = re.compile("[0-9][0-9]\-[0-9][0-9][0-9]$")
     
     def parseSubPrereqs(subPrereqs):
