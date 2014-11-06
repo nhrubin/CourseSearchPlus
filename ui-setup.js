@@ -26,7 +26,6 @@ function getDeptList() {
       });
       dropdown += '</select>';
       $('#departments').append(dropdown);
-      //console.log(data);
     },
     error: function (responseData, textStatus, errorThrown) {
         console.log("Failed: "+errorThrown);
