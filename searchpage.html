@@ -21,9 +21,9 @@
     <div class="container" style="width:600px; float:left; top:48; position:fixed">
       <br />
       Semester:
-      <select class="form-control" style="width:150px">
-	<option value="one">Fall 2014</option>
-	<option value="two">Spring 2015</option>
+      <select id="semester" class="form-control" style="width:150px">
+	<option value="F14">Fall 2014</option>
+	<option value="S15">Spring 2015</option>
       </select>
       <div class="">Departments:</div>
       <div class="" id="departments">
@@ -38,12 +38,12 @@
         <form class="form-inline" role="form">
           <div class="form-group">Instructor:
             <label class="sr-only" for="instrFirstName">First Name</label>
-            <input type="email" class="form-control" id="instrFirstName"
+            <input class="form-control" id="instrFirstName"
                    placeholder="First Name">
           </div>
           <div class="form-group">
             <label class="sr-only" for="instrLastName">Last Name</label>
-            <input type="password" class="form-control" id="instrLastName"
+            <input class="form-control" id="instrLastName"
                    placeholder="Last Name">
           </div>
         </form>
@@ -52,100 +52,33 @@
         <form class="form-inline" role="form">
           <div class="form-group">Unit Range:
             <label class="sr-only" for="minUnits">min units</label>
-            <input type="email" class="form-control" id="minUnits"
+            <input class="form-control" id="minUnits"
                    placeholder="0">
           </div>to
           <div class="form-group">
             <label class="sr-only" for="maxUnits">max units</label>
-            <input type="password" class="form-control" id="maxUnits"
+            <input class="form-control" id="maxUnits"
                    placeholder="50">
           </div>
         </form>
       </div>
       <div class="">Location:
-	<select class="form-control" style="width:150px">
+	<select id="loc" class="form-control" style="width:150px">
 	  <option value="loc1">Pittsburgh</option>
 	  <option value="loc2">Another location</option>
 	</select>
       </div>
       <div>Level:
-	<select class="form-control" style="width:150px">
+	<select id="level" class="form-control" style="width:150px">
 	  <option value="undergrad">Undergraduate</option>
 	  <option value="grad">Graduate</option>
 	</select>
       </div>
       <div class="row"></div>
       <br />
-      <button class="btn btn-default">Search</button>
+      <button class="btn btn-default" onclick="search()">Search</button>
     </div>
-    <div class="container" style="width:700px; height:10000px; border-left:solid; float:right">
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
-      Here is a div with a lot of text to see how scrolling looks.<br />
+    <div class="container" style="width:700px; height:10000px; border-left:solid; float:right" id="results">
     </div>
     <div id="push" class=""></div>
   </body>
