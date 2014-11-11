@@ -1,13 +1,36 @@
 var appIdStr = 'app_id=c1ebfcb3-4982-4c4a-8f69-8c664abb7230&app_secret_key=rIUMURQA27n-KWqdUJroLb9IVxYHLaPYqkKBC6Qb5ZVTcBpdcWNR_BTA';
 
+/*
+ *Example input to get courses
+ *When the result is complete, callback is called
+ *Note the scottylabs   "instructor" field is actually used for location,
+ *so we cant get information about who is teaching the course
+ *
+ * {"semester" : "F14", //Required
+ * "departments" : [15,18],
+ * "prereqs" : ["15122", "15251", "15213", "18100"], //Optional
+ * "location" : "Pittsburgh", //Optional
+ * "times" : {"T" : [{"time_start" : "10:00AM", "time_end" : "3:00PM"}], //Optional
+ *           "R" : [{"time_start" : "10:00AM", "time_end" : "3:00PM"}]}}; 
+ */
+
+function getClassTime(t) {
+  var hours = parseInt(t.substring(0,t.indexOf(":")));
+  var minutes = parseInt(t.substring(t.indexOf(":") + 1,t.indexOf(":") + 3));
+  if(t.indexOf("PM") > -1 && hours < 12) {
+    hours += 12;
+  }
+  return hours*60 + minutes;
+}
+
 function isValidTime(lectureTime, validTimes) {
   for(var i = 0; i < validTimes.length; i++) {
-    Date s1 = Date.parseExact(validTimes[i]["time_start"], "hh:mmtt");
-    Date s2 = Date.parseExact(lectureTime["time_start"], "hh:mmtt");
-    Date e1 = Date.parseExact(validTimes[i]["time_end"], "hh:mmtt");
-    Date e2 = Date.parseExact(lectureTime["time_end"], "hh:mmtt");
+    var s1 = getClassTime(validTimes[i]["time_start"]);
+    var s2 = getClassTime(lectureTime["time_start"]);
+    var e1 = getClassTime(validTimes[i]["time_end"]);
+    var e2 = getClassTime(lectureTime["time_end"]);
 
-    if(s1 <= s1 && e1 >= e2) {
+    if(s1 <= s2 && e1 >= e2) {
       return true;
     }
   }
@@ -16,69 +39,85 @@ function isValidTime(lectureTime, validTimes) {
       
 function isValidDayTime(lectureTime,validTimes) {
   var times;
-  if(lectureTime["days"].indexOf("M") > -1) {
-    if(!validTimes["M"] || !isValidTime(lectureTime, validTimes["M"])) {
-      return false;
-    }
-  }
-  //Note this works because TR always comes after T if they are both sloted
-  if(lectureTime["days"].indexOf("T") > -1 &&
-     lectureTime["days"].indexOf("TR") != lectureTime["days"].indexOf("T") ) {
-     if(!validTimes["T"] || !isValidTime(lectureTime, validTimes["T"])) {
+  for( var i = 0; i < lectureTime.length; i++) {
+    var days = lectureTime[i]["days"];
+    if(days.indexOf("M") > -1) {
+      if(!validTimes["M"] || !isValidTime(lectureTime[i], validTimes["M"])) {
         return false;
-     }
-  }
-  if(lectureTime["days"].indexOf("W") > -1) {
-    if(!validTimes["W"] || !isValidTime(lectureTime, validTimes["W"])) {
-      return false;
+      }
+    }
+    //Note this works because TR always comes after T if they are both sloted
+    if(days.indexOf("T") > -1) {
+        if(!validTimes["T"] || !isValidTime(lectureTime[i], validTimes["T"])) {
+          return false;
+        }
+    }
+    if(days.indexOf("W") > -1) {
+      if(!validTimes["W"] || !isValidTime(lectureTime[i], validTimes["W"])) {
+        return false;
+      }
+    }
+    if(days.indexOf("R") > -1) {
+      if(!validTimes["R"] || !isValidTime(lectureTime[i], validTimes["R"])) {
+        return false;
+      }
+    }
+    if(days.indexOf("F") > -1) {
+      if(!validTimes["F"] || !isValidTime(lectureTime[i], validTimes["F"])) {
+        return false;
+      }
+    }
+    if(days.indexOf("S") > -1) {
+      if(!validTimes["S"] || !isValidTime(lectureTime[i], validTimes["S"])) {
+        return false;
+      }
+    }
+    if(days.indexOf("U") > -1) {
+      if(!validTimes["U"] || !isValidTime(lectureTime[i], validTimes["U"])) {
+        return false;
+      }
     }
   }
-  if(lectureTime["days"].indexOf("TR") > -1) {
-    if(!validTimes["TR"] || !isValidTime(lectureTime, validTimes["TR"])) {
-      return false;
-    }
-  }
-  if(lectureTime["days"].indexOf("F") > -1) {
-    if(!validTimes["F"] || !isValidTime(lectureTime, validTimes["F"])) {
-      return false;
-    }
-  }
-  if(lectureTime["days"].indexOf("S") > -1) {
-    if(!validTimes["S"] || !isValidTime(lectureTime, validTimes["S"])) {
-      return false;
-    }
-  }
+  return true;
 }
 
 function filterCourses(courses,criteria) {
   var validCourses = [];
   for(var i = 0; i < courses.length; i++) {
     var course = courses[i];  
-    if((!criteria["minUnits"] || course["units"] > criteria["minUnits"]) &&
+    if((!criteria["minUnits"] || course["units"] >= criteria["minUnits"]) &&
        (!criteria["maxUnits"] || course["units"] <= criteria["maxUnits"])) {
       var validLectures = [];
       for(var j = 0; j < course["lectures"].length; j++) {
         var lecture = course["lectures"][j];
-        if(!criteria["instrLastName"] ||
-          lecture["instructors"].indexOf(criteria["instrLastName"]) > -1) {
-          if(!criteria["times"]) {
-            validLectures.push(lecture);
-          } else if(isValidDayTime(lecture["meetings"],criteria["times"])) {
-            var validRecitations = [];
-            for(var k = 0; k < lecture["recitations"].length; k++) {
-              var recitation = lecture["recitations"][k];
-              if(isValidDayTime(recitation["meetings"],criteria["times"])) {
-                validRecitations.push(recitation);
+        if(!criteria["location"] ||
+          lecture["instructors"].indexOf(criteria["location"]) > -1) {
+            if(!criteria["times"]) {
+              validLectures.push(lecture);
+            } else if(isValidDayTime(lecture["meetings"],criteria["times"])) {
+              if(lecture["recitations"]) { 
+                var validRecitations = [];
+                for(var k = 0; k < lecture["recitations"].length; k++) {
+                  var recitation = lecture["recitations"][k];
+                  if(!criteria["location"] ||
+                    recitation["instructors"].indexOf(criteria["location"]) > -1) {
+                      if(isValidDayTime(recitation["meetings"],criteria["times"])) {
+                        validRecitations.push(recitation);
+                      }
+                  }
+                }
+                if(validRecitations.length > 0 || lecture["recitations"].length == 0) {
+                  lecture["recitations"] = validRecitations;
+                  validLectures.push(lecture);
+                }
+              } else {
+                validLectures.push(lecture);
               }
             }
-            if(validRecitations.length > 0 || lecture["recitations"].length == 0) {
-              lecture["recitations"] = validRecitations;
-              validLectures.push(lecture);
-            }
-          }
         }
       }
       if(validLectures.length > 0 || course["lectures"].length == 0) {
+        course["lectures"] = validLectures;
         validCourses.push(course);
       }
     }
@@ -87,11 +126,16 @@ function filterCourses(courses,criteria) {
   return validCourses;
 }
 
-function verifyPrereqs(prereqs, classes) {
+function verifyPrereqs(prereqs, courses) {
+  if(!prereqs)
+    return true;
+
   if(prereqs.search(/[0-9][0-9]-[0-9][0-9][0-9]/) == 0) {
-    var class = prereqs.substring(0,2) + prereqs.substring (3,6);
-    if(classes.indexOf(class) > -1) {
+    var course = prereqs.substring(0,2) + prereqs.substring (3,6);
+    if(courses.indexOf(course) > -1) {
       return true;
+    } else {
+      return false;
     }
   }
   else {
@@ -112,10 +156,10 @@ function verifyPrereqs(prereqs, classes) {
     }
 
     if(prereqs.substring(1,3) === "or") {
-      return verifyPrereqs(left, classes) || verifyPrereqs(right, classes);
+      return verifyPrereqs(left, courses) || verifyPrereqs(right, courses);
     }
     if(prereqs.substring(1,4) === "and") {
-      return verifyPrereqs(left, classes) && verifyPrereqs(right, classes);
+      return verifyPrereqs(left, courses) && verifyPrereqs(right, courses);
     }
   }
   return false;
@@ -131,11 +175,10 @@ function filterPrereqs(courses, criteria, callback) {
   var verfiedCourses = [];
   $.ajax({
     type: "POST",
-    url: 'prereqs.php',
-    dataType: 'json',
-    data: args,
+    url: "prereqs.php",
+    data: "data="+JSON.stringify(args),
     success: function (responseData, textStatus, jqXHR) {
-        console.log("success");
+        var verifiedCourses = [];
         var response = JSON.parse(responseData);
         for(var i = 0; i< courses.length; i++) {
           if(response[args["courses"][i]]) {
@@ -148,7 +191,8 @@ function filterPrereqs(courses, criteria, callback) {
       },
     error: function (responseData, textStatus, errorThrown) {
         console.log("Failed: "+errorThrown);
-      });
+        console.log("CALLD");
+    }});
 }
 
 function getCourses(criteria, callback) {
@@ -156,7 +200,8 @@ function getCourses(criteria, callback) {
   var replyCount = 0;
   for(var i = 0; i < criteria["departments"].length; i++) {
     var dept = criteria["departments"][i];
-    var reqUrl = https://apis.scottylabs.org/v1/schedule/S15/departments/' + dept + '/courses?' + appIdStr;
+    var reqUrl = "https://apis.scottylabs.org/v1/schedule/" + criteria["semester"] + "/departments/" + dept + "/courses?limit=100&" + appIdStr;
+    console.log(reqUrl);
     $.ajax({
       type: 'GET',
       dataType: "text",
@@ -187,4 +232,5 @@ function getCourses(criteria, callback) {
           }
         }
     }});
+  }
 }
