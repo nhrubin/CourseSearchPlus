@@ -13,7 +13,6 @@ function getDeptList() {
     jsonp: true,
     url: reqUrl,
     success: function (responseData, textStatus, jqXHR) {
-      console.log("success");
       var depts = JSON.parse(responseData)['departments'];
       depts = depts.sort(function(a, b) {
 	return a['name'].localeCompare(b['name']);
@@ -35,7 +34,6 @@ function getDeptList() {
 function search() {
   var selectedDepartments = [];
   $("#departmentSelector option:selected").each(function() {
-    console.log(this);
     selectedDepartments.push($(this).val());
   });
   var request = {
@@ -50,12 +48,11 @@ function search() {
     location:$("#loc").val(),
     level:$("#level").val()
   };
-  console.log(request);
   $("#results").empty();
-  results = getMockResults(request);
-  console.log(results);
-  $.each(results["courses"], function() {
-    $("#results").append("<br />"+this["number"]+" "+this["name"]+"<br />");
+  getCourses(request, function(results) {
+    $.each(results, function() {
+      $("#results").append("<br />"+this["number"]+" "+this["name"]+"<br />");
+    });
   });
 }
 
