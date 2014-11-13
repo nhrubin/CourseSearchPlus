@@ -50,6 +50,9 @@ function search() {
   };
   $("#results").empty();
   getCourses(request, function(results) {
+    results = results.sort(function(a, b) {
+      return a['number'] - b['number'];
+    });
     $.each(results, function() {
       $("#results").append("<br />"+this["number"]+" "+this["name"]+"<br />");
     });
