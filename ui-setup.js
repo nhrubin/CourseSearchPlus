@@ -36,10 +36,11 @@ function search() {
   $("#departmentSelector option:selected").each(function() {
     selectedDepartments.push($(this).val());
   });
+  console.log($("#reqsAsTags").tagsinput('items'));
   var request = {
     semester:$("#semester").val(),
     departments:selectedDepartments,
-    prereqs:null,
+    prereqs:$("#reqsAsTags").tagsinput('items'),
     times:null,
     instrFirstName:$("#instrFirstName").val(),
     instrLastName:$("#instrLastName").val(),
