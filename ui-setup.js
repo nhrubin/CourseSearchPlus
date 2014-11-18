@@ -40,7 +40,7 @@ function search() {
   var request = {
     semester:$("#semester").val(),
     departments:selectedDepartments,
-    prereqs:$("#reqsAsTags").tagsinput('items'),
+    prereqs:(($('#useReqs').is(':checked')) ? ($("#reqsAsTags").tagsinput('items')) : null),
     times:null,
     instrFirstName:$("#instrFirstName").val(),
     instrLastName:$("#instrLastName").val(),
