@@ -24,23 +24,36 @@
     </div>
     <div class="container" style="width:600px; float:left; top:48; position:fixed">
       <br />
-      Semester:
+      *Semester:
       <select id="semester" class="form-control" style="width:150px">
 	<option value="F14">Fall 2014</option>
 	<option value="S15">Spring 2015</option>
       </select>
-      <div class="">Departments:</div>
+      <div class="">*Departments:</div>
       <div class="" id="departments">
       </div>
       <div class="">Show classes with fulfilled prereqs only:
         <label class="">
-          <input type="checkbox" class="">
+          <input type="checkbox" class="" id="useReqs">
         </label>
         
         <input class="form-control" id="reqsAsTags"
-                   placeholder="15-112, 21-127" data-role="tagsinput">
+                   placeholder="use 5 digit course codes (without hyphens) separated by commas" data-role="tagsinput">
       </div>
-      Times:
+      <div class="">
+        <form class="form-inline" role="form">
+          <div class="form-group">Times:
+            <label class="sr-only" for="startTime">Start Time</label>
+            <input class="form-control" id="startTime"
+                   placeholder="8:30AM">
+          </div> to
+          <div class="form-group">
+            <label class="sr-only" for="endTime">End Time</label>
+            <input class="form-control" id="endTime"
+                   placeholder="4:30PM">
+          </div>
+        </form>
+      </div>
       <div class="">
         <form class="form-inline" role="form">
           <div class="form-group">Instructor:
@@ -61,7 +74,7 @@
             <label class="sr-only" for="minUnits">min units</label>
             <input class="form-control" id="minUnits"
                    placeholder="0">
-          </div>to
+          </div> to
           <div class="form-group">
             <label class="sr-only" for="maxUnits">max units</label>
             <input class="form-control" id="maxUnits"

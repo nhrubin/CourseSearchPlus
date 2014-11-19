@@ -17,10 +17,10 @@ function getDeptList() {
       depts = depts.sort(function(a, b) {
 	return a['name'].localeCompare(b['name']);
       });
-      var dropdown = '<select multiple id="departmentSelector">';
+      var dropdown = '<select multiple id="departmentSelector" size="8">';
       $.each(depts, function() {
 	dropdown += '<option value="' + this['id'] + '">' + this['name'] +
-	  " (" + this['id'] + ')</option>';
+	  " (" + this['id'] + '-xxx)</option>';
 	
       });
       dropdown += '</select>';
@@ -36,11 +36,12 @@ function search() {
   $("#departmentSelector option:selected").each(function() {
     selectedDepartments.push($(this).val());
   });
+  console.log($("#reqsAsTags").tagsinput('items'));
   var request = {
     semester:$("#semester").val(),
     departments:selectedDepartments,
-    prereqs:null,
-    times:null,
+    prereqs:(($('#useReqs').is(':checked')) ? ($("#reqsAsTags").tagsinput('items')) : null),
+    times:getTimes(),
     instrFirstName:$("#instrFirstName").val(),
     instrLastName:$("#instrLastName").val(),
     minUnits:$("#minUnits").val(),
@@ -57,6 +58,13 @@ function search() {
       $("#results").append("<br />"+this["number"]+" "+this["name"]+"<br />");
     });
   });
+}
+
+function getTimes() {
+  var startTime = $("#startTime").val();
+  var endTime = $("#endTime").val();
+  var interval = {"time_start": startTime, "time_end": endTime};
+  return {"M" : [interval], "T": [interval], "W": [interval], "R": [interval], "F": [interval]};
 }
 
 // Returns mock search results for UI purposes until the filter is complete.
