@@ -63,6 +63,7 @@ function search() {
 function getTimes() {
   var startTime = $("#startTime").val();
   var endTime = $("#endTime").val();
+  if (startTime == "" || endTime == "") return null;
   var interval = {"time_start": startTime, "time_end": endTime};
   return {"M" : [interval], "T": [interval], "W": [interval], "R": [interval], "F": [interval]};
 }
