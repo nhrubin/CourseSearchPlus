@@ -127,6 +127,7 @@ function filterCourses(courses,criteria) {
 }
 
 function verifyPrereqs(prereqs, courses) {
+  console.log(prereqs);
   if(!prereqs)
     return true;
 
@@ -185,7 +186,9 @@ function filterPrereqs(courses, criteria, callback) {
             if(verifyPrereqs(response[args["courses"][i]],criteria["prereqs"])) {
               verifiedCourses.push(courses[i]);
             }
-          }
+          } else {
+	    verifiedCourses.push(courses[i]);
+	  }
         }
         callback(verifiedCourses);
       },
